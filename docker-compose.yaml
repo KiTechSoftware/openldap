@@ -1,0 +1,42 @@
+services:
+  ldappy:
+    container_name: ldap
+    # image: kitechsoftware/openldap:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    environment:
+      TZ: UTC
+
+      LDAP_ORGANISATION: ${LDAP_ORGANISATION}
+      LDAP_DOMAIN: ${LDAP_DOMAIN}
+      LDAP_BASE_DN: ${LDAP_BASE_DN}
+
+      LDAP_ROOT_USER: ${LDAP_ROOT_USER}
+      LDAP_ROOT_PASSWORD: ${LDAP_ROOT_PASSWORD}
+
+      LDAP_USER: ${LDAP_USER}
+      LDAP_GROUP: ${LDAP_GROUP}
+      LDAP_LOG_LEVEL: ${LDAP_LOG_LEVEL}
+
+      LDAP_ENABLE_SSL: ${LDAP_ENABLE_SSL}
+      LDAP_DISABLE_NON_SSL: ${LDAP_DISABLE_NON_SSL}
+
+      LDAP_SSL_CRT_FILENAME: ${LDAP_SSL_CRT_FILENAME}
+      LDAP_SSL_KEY_FILENAME: ${LDAP_SSL_KEY_FILENAME}
+      LDAP_SSL_CA_CRT_FILENAME: ${LDAP_SSL_CA_CRT_FILENAME}
+      LDAP_SSL_VERIFY_CLIENT: ${LDAP_SSL_VERIFY_CLIENT}
+
+    volumes:
+      - ./ldappy/config:/etc/ldappy
+      - ./ldappy/logs:/var/log/ldappy
+      - ./ldappy/data:/var/lib/ldap
+      - ./ldappy/ldif:/ldif
+      - ./ldappy/supervisor:/etc/supervisor/conf.d/
+
+    ports:
+      - "8080:5081"
+      - "389:389"
+
+    restart: unless-stopped
